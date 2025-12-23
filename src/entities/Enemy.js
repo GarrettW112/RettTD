@@ -1,11 +1,11 @@
 export class Enemy {
-    constructor(gameWidth, gameHeight) {
+    constructor(gameWidth, gameHeight, x, y) {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.width = 35;
         this.height = 35;
-        this.x = 0;
-        this.y = gameHeight - this.height;
+        this.x = x;
+        this.y = y;
         this.hp = 100
         this.speed = 1;
         this.xdiff;

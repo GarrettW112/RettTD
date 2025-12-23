@@ -20,14 +20,17 @@ export class Tower {
         ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
     }
 
-    update(enemy, proj) {
+    update(enemies, proj) {
         if (this.cooldown == 0) {
-            this.xdiff = enemy.x - this.x;
-            this.ydiff = enemy.y - this.y;
-            this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2));
-            if (this.range > this.diff) {
-                proj.push(new Projectile(this.gameWidth, this.gameHeight, this.x, this.y, enemy));
-                this.cooldown = 360;
+            for (const z of enemies) {
+                this.xdiff = enemy.x - this.x;
+                this.ydiff = enemy.y - this.y;
+                this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2));
+                if (this.range > this.diff) {
+                    proj.push(new Projectile(this.gameWidth, this.gameHeight, this.x, this.y, enemy));
+                    this.cooldown = 360;
+                }
+                break;
             }
         }
         else {
