@@ -17,7 +17,7 @@ export class Tower {
 
     draw(ctx) {
         ctx.fillStyle = 'blue';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
     }
 
     update(enemy, proj) {

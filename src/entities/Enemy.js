@@ -6,6 +6,7 @@ export class Enemy {
         this.height = 35;
         this.x = 0;
         this.y = gameHeight - this.height;
+        this.hp = 100
         this.speed = 1;
         this.xdiff;
         this.ydiff;
@@ -15,7 +16,12 @@ export class Enemy {
 
     draw(ctx) {
         ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
+    }
+
+    death(ctx) {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x-(this.width/2)+5, this.y-(this.height/2)+5, this.width+5, this.height+5);
     }
 
     update(x, y) {

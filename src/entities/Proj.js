@@ -1,5 +1,3 @@
-import { Enemy } from './Enemy.js';
-
 export class Projectile {
     constructor(gameWidth, gameHeight, tx, ty, enemy) {
         this.gameWidth = gameWidth;
@@ -14,21 +12,26 @@ export class Projectile {
         this.ydiff;
         this.diff;
         this.ratio;
+        this.flag = 0;
     }
 
     draw(ctx) {
         ctx.fillStyle = 'green';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
     }
 
     update() {
-        this.xdiff = this.targetx - this.x;
-        this.ydiff = this.targety - this.y;
+        this.xdiff = this.target.x - this.x;
+        this.ydiff = this.target.y - this.y;
         this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2))
-        if (this.diff != 0) {
+        if (this.diff > 15) {
             this.ratio = this.speed / this.diff;
             this.x += this.xdiff * this.ratio;
             this.y += this.ydiff * this.ratio;
+        }
+        else {
+            this.target.hp -= 25;
+            this.flag = 1;
         }
     }
 }
