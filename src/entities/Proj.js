@@ -7,7 +7,7 @@ export class Projectile {
         this.x = tx;
         this.y = ty;
         this.speed = 5;
-        this.target = enemy
+        this.target = enemy;
         this.xdiff;
         this.ydiff;
         this.diff;
@@ -32,6 +32,9 @@ export class Projectile {
         else {
             this.target.hp -= 25;
             this.flag = 1;
+            if (this.target.hp == 0) {
+                this.target.flag = 1;
+            }
         }
     }
 }

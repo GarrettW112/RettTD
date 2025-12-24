@@ -1,17 +1,19 @@
 export class Enemy {
-    constructor(gameWidth, gameHeight, x, y) {
+    constructor(gameWidth, gameHeight, x, y, player) {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.width = 35;
         this.height = 35;
         this.x = x;
         this.y = y;
-        this.hp = 100
+        this.hp = 100;
         this.speed = 1;
+        this.flag = 0;
         this.xdiff;
         this.ydiff;
         this.diff;
         this.ratio;
+        this.target = player;
     }
 
     draw(ctx) {
@@ -24,9 +26,9 @@ export class Enemy {
         ctx.fillRect(this.x-(this.width/2)+5, this.y-(this.height/2)+5, this.width+5, this.height+5);
     }
 
-    update(x, y) {
-        this.xdiff = x - this.x;
-        this.ydiff = y - this.y;
+    update() {
+        this.xdiff = this.target.x - this.x;
+        this.ydiff = this.target.y - this.y;
         this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2))
         if (this.diff != 0) {
             this.ratio = this.speed / this.diff;

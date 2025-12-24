@@ -1,12 +1,17 @@
+import { Tower } from './Tower.js';
+
 export class Player {
-    constructor(gameWidth, gameHeight) {
+    constructor(gameWidth, gameHeight, towers) {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
         this.width = 35;
         this.height = 35;
-        this.x = 0;
-        this.y = gameHeight - this.height;
+        this.x = 300;
+        this.y = 300;
+        this.hp = 100;
         this.speed = 5;
+        this.cooldown = 0;
+        this.towers = towers;
     }
 
     draw(ctx) {
@@ -20,6 +25,16 @@ export class Player {
 
         if (input.keys.includes('ArrowUp')) this.y -= this.speed;
         if (input.keys.includes('ArrowDown')) this.y += this.speed;
+
+        if (this.cooldown == 0) {
+            if (input.keys.includes('t')) {
+                this.towers.push(new Tower(this.gameHeight, this.gameWidth, this.x, this.y))
+                this.cooldown = 360;
+            }
+        }
+        else {
+            this.cooldown--;
+        }
 
         if (this.x < 0) this.x = 0;
         if (this.x > this.gameWidth - this.width) this.x = this.gameWidth - this.width;

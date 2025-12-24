@@ -1,51 +1,58 @@
 import { Player } from './entities/Player.js';
 import { Enemy } from './entities/Enemy.js';
-import { Tower } from './entities/Tower.js';
+import { Tower } from './entities/Tower.js'
 import { InputHandler } from './Input.js';
 
 export class Game {
     constructor(width, height) {
         this.width = width;
         this.height = height;
-        this.time = 0
-        this.player = new Player(this.width, this.height);
+        this.time = 0;
+        this.towers = [];
+        for (let x = 125; x <= 475; x += 25) {
+            for (let y = 125; y <= 475; y += 25) {
+                this.towers.push(new Tower(this.width, this.height, x, y))
+            }
+        }
+        this.player = new Player(this.width, this.height, this.towers);
         this.enemies = [];
-        this.tower = new Tower(this.width, this.height);
+        //this.tower = new Tower(this.width, this.height);
         this.projectiles = [];
         this.input = new InputHandler();
     }
 
     update() {
         this.player.update(this.input);
+        this.enemies = this.enemies.filter(z => z.flag == 0);
         for (const z of this.enemies) {
             z.update();
         }
-        this.tower.update(this.enemies, this.projectiles);
+        for (const z of this.towers) {
+            z.update(this.enemies, this.projectiles);
+        }
         this.projectiles = this.projectiles.filter(z => z.flag == 0);
         for (const z of this.projectiles) {
             z.update();
         }
     }
 
-    Environment() {
-        if (this.time == 0) {
-            this.enemies.push(new Enemy(this.width, this.height, 0, 0))
-        }
-        for (x of 1 + Math.floor(this.time/100)) {
-            if (Math.floor(Math.random() * 401) == 100) {
-                this.enemies.push(new Enemy(this.width, this.height, Math.floor(Math.random() * 801), 0))
+    environment() {
+        for (let x = 0; x < this.time; x++) {
+            let rand = Math.floor(Math.random() * (40000+(10*this.time)))
+            if (rand == 99) {
+                this.enemies.push(new Enemy(this.width, this.height, Math.floor(Math.random() * this.width), 0, this.player));
             }
-            if (Math.floor(Math.random() * 401) == 200) {
-                this.enemies.push(new Enemy(this.width, this.height, Math.floor(Math.random() * 801), 800))
+            if (rand == 199) {
+                this.enemies.push(new Enemy(this.width, this.height, Math.floor(Math.random() * this.width), this.height, this.player));
             }
-            if (Math.floor(Math.random() * 401) == 300) {
-                this.enemies.push(new Enemy(this.width, this.height, 0, Math.floor(Math.random() * 801)))
+            if (rand == 299) {
+                this.enemies.push(new Enemy(this.width, this.height, 0, Math.floor(Math.random() * this.height), this.player));
             }
-            if (Math.floor(Math.random() * 401) == 400) {
-                this.enemies.push(new Enemy(this.width, this.height, 800, Math.floor(Math.random() * 801)))
+            if (rand == 399) {
+                this.enemies.push(new Enemy(this.width, this.height, this.width, Math.floor(Math.random() * this.height), this.player));
             }
         }
-        this.time += 1
+        this.time++;
     }
 
     draw(context) {
@@ -58,7 +65,9 @@ export class Game {
                 z.death;
             }
         }
-        this.tower.draw(context);
+        for (const z of this.towers) {
+            z.draw(context);
+        }
         for (const z of this.projectiles) {
             z.draw(context);
         }
