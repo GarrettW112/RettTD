@@ -1,7 +1,5 @@
 export class Projectile {
-    constructor(gameWidth, gameHeight, tx, ty, enemy) {
-        this.gameWidth = gameWidth;
-        this.gameHeight = gameHeight;
+    constructor(tx, ty, enemy) {
         this.width = 5;
         this.height = 5;
         this.x = tx;
