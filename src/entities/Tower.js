@@ -29,15 +29,29 @@ export class Tower {
     update() {
         if (this.type == 1) {
             if (this.cooldown == 0) {
+                let best;
+                let bdiff;
                 for (const enemy of this.enemies) {
                     let xdiff = enemy.x - this.x;
                     let ydiff = enemy.y - this.y;
                     let diff = Math.sqrt((xdiff**2) + (ydiff**2));
                     if (this.range > diff) {
-                        this.projectiles.push(new Projectile(this.x, this.y, enemy));
+                        if (best) {
+                            if (bdiff < diff) {
+                                best = enemy;
+                                bdiff = diff;
+                            }
+                        }
+                        else {
+                            best = enemy;
+                            bdiff = diff;
+                        }
                         this.cooldown = 30;
                         break;
                     }
+                }
+                if (best) {
+                    this.projectiles.push(new Projectile(this.x, this.y, best));
                 }
             }
             else {
