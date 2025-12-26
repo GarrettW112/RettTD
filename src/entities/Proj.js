@@ -6,10 +6,6 @@ export class Projectile {
         this.y = ty;
         this.speed = 5;
         this.target = enemy;
-        this.xdiff;
-        this.ydiff;
-        this.diff;
-        this.ratio;
         this.flag = 0;
     }
 
@@ -19,13 +15,13 @@ export class Projectile {
     }
 
     update() {
-        this.xdiff = this.target.x - this.x;
-        this.ydiff = this.target.y - this.y;
-        this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2))
-        if (this.diff > 15) {
-            this.ratio = this.speed / this.diff;
-            this.x += this.xdiff * this.ratio;
-            this.y += this.ydiff * this.ratio;
+        let xdiff = this.target.x - this.x;
+        let ydiff = this.target.y - this.y;
+        let diff = Math.sqrt((xdiff**2) + (ydiff**2))
+        if (diff > 15) {
+            let ratio = this.speed / diff;
+            this.x += xdiff * ratio;
+            this.y += ydiff * ratio;
         }
         else {
             this.target.hp -= 25;

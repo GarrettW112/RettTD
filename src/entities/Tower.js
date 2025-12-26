@@ -1,18 +1,18 @@
 import { Projectile } from './Proj.js';
 
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y, projectiles, enemies) {
         this.width = 45;
         this.height = 45;
         this.x = x;
         this.y = y;
         this.range = 150;
-        this.xdiff;
-        this.ydiff;
-        this.diff;
+        this.hp = 1000;
         this.cooldown = 0;
         this.type = 0;
         this.bflag = 0;
+        this.projectiles = projectiles;
+        this.enemies = enemies;
     }
 
     draw(ctx) {
@@ -26,22 +26,22 @@ export class Tower {
         }
     }
 
-    update(enemies, proj) {
+    update() {
         if (this.type == 1) {
             if (this.cooldown == 0) {
-                for (const enemy of enemies) {
-                    this.xdiff = enemy.x - this.x;
-                    this.ydiff = enemy.y - this.y;
-                    this.diff = Math.sqrt((this.xdiff**2) + (this.ydiff**2));
-                    if (this.range > this.diff) {
-                        proj.push(new Projectile(this.x, this.y, enemy));
+                for (const enemy of this.enemies) {
+                    let xdiff = enemy.x - this.x;
+                    let ydiff = enemy.y - this.y;
+                    let diff = Math.sqrt((xdiff**2) + (ydiff**2));
+                    if (this.range > diff) {
+                        this.projectiles.push(new Projectile(this.x, this.y, enemy));
                         this.cooldown = 30;
+                        break;
                     }
-                    break;
                 }
             }
             else {
-                this.cooldown -= 1
+                this.cooldown -= 1;
             }
         }
     }

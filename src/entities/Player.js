@@ -6,11 +6,10 @@ export class Player {
         this.height = 35;
         this.x = 300;
         this.y = 300;
-        this.gridx = 4;
-        this.gridy = 4;
         this.hp = 100;
         this.iframes = 0;
         this.speed = 5;
+        this.gold = 100;
         this.cooldown = 0;
         this.towers = towers;
     }
@@ -31,25 +30,50 @@ export class Player {
     }
 
     update(input) {
-        if (input.keys.includes('ArrowRight')) this.x += this.speed;
-        if (input.keys.includes('ArrowLeft')) this.x -= this.speed;
+        let x = this.x;
+        let y = this.y;
+        if (input.keys.includes('ArrowRight')) {
+            x += this.speed;
+        }
 
-        if (input.keys.includes('ArrowUp')) this.y -= this.speed;
-        if (input.keys.includes('ArrowDown')) this.y += this.speed;
+        if (input.keys.includes('ArrowLeft')) {
+            x -= this.speed;
+        }
 
-        this.gridx = Math.floor(this.x/50) - 2;
-        this.gridy = Math.floor(this.y/50) - 2;
+        if (input.keys.includes('ArrowUp')) {
+            y -= this.speed;
+        }
 
-        if (this.cooldown == 0) {
-            if (input.keys.includes('t')) {
-                if (0 <= this.gridx && this.gridx <= 7 && 0 <= this.gridy && this.gridy <= 7) {
-                    this.towers[this.gridx][this.gridy].type = 1;
-                    this.cooldown = 60;
+        if (input.keys.includes('ArrowDown')) {
+            y += this.speed;
+        }
+
+        let gridx = Math.floor(x/50) - 2;
+        let gridy = Math.floor(y/50) - 2;
+
+        if (0 <= gridx && gridx <= 7 && 0 <= gridy && gridy <= 7) {
+            if (this.towers[gridx][gridy].type == 0) {
+                this.x = x;
+                this.y = y;
+                if (this.cooldown == 0) {
+                    if (input.keys.includes('t')) {
+                        if (this.gold >= 50) {
+                            this.towers[gridx][gridy].type = 1;
+                            this.gold -= 50;
+                            this.x = Math.round(this.x / 50) * 50;
+                            this.y = Math.round(this.y / 50) * 50;
+                            this.cooldown = 30;
+                        }
+                    }
+                }
+                else {
+                    this.cooldown--;
                 }
             }
         }
         else {
-            this.cooldown--;
+            this.x = x;
+            this.y = y;
         }
 
         if (this.x < 0) this.x = 0;
