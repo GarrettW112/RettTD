@@ -2,6 +2,8 @@ import { Projectile } from './Proj.js';
 
 export class Tower {
     constructor(x, y, projectiles, enemies) {
+        const Img = new Image();
+        Img.src = '../assets/tower1.png';
         this.width = 45;
         this.height = 45;
         this.x = x;
@@ -20,8 +22,13 @@ export class Tower {
             if (this.type == 0) {
             }
             else {
-                ctx.fillStyle = 'blue';
-                ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
+                ctx.drawImage(
+                pixelArtImg,                        // The image variable we defined above
+                this.x - (this.width / 2),          // X position (centered)
+                this.y - (this.height / 2),         // Y position (centered)
+                this.width,                         // Width to draw
+                this.height                         // Height to draw
+                );
             }
         }
     }
