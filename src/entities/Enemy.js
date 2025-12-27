@@ -1,3 +1,6 @@
+const wispSprite = new Image();
+wispSprite.src = 'src/assets/wisp.png';
+
 export class Enemy {
     constructor(x, y, player, towers) {
         this.width = 35;
@@ -12,8 +15,13 @@ export class Enemy {
     }
 
     draw(ctx) {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
+        ctx.drawImage(
+            wispSprite,
+            this.x - (this.width / 2),          // X position (centered)
+            this.y - (this.height / 2),         // Y position (centered)
+            this.width,                         // Width to draw
+            this.height                         // Height to draw
+            );
     }
 
     death(ctx) {

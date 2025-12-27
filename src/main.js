@@ -4,6 +4,7 @@ window.addEventListener('load', function() {
     // Setup Canvas
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
     canvas.width = 600;
     canvas.height = 600;
 
@@ -12,7 +13,8 @@ window.addEventListener('load', function() {
 
     // Animation Loop
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'green'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         game.update();
         game.environment();

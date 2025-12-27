@@ -1,9 +1,10 @@
 import { Projectile } from './Proj.js';
 
+const towerSprite = new Image();
+towerSprite.src = 'src/assets/tower1.png';
+
 export class Tower {
     constructor(x, y, projectiles, enemies) {
-        const Img = new Image();
-        Img.src = '../assets/tower1.png';
         this.width = 45;
         this.height = 45;
         this.x = x;
@@ -23,7 +24,7 @@ export class Tower {
             }
             else {
                 ctx.drawImage(
-                pixelArtImg,                        // The image variable we defined above
+                towerSprite,                       // The image variable we defined above
                 this.x - (this.width / 2),          // X position (centered)
                 this.y - (this.height / 2),         // Y position (centered)
                 this.width,                         // Width to draw
@@ -53,12 +54,11 @@ export class Tower {
                             best = enemy;
                             bdiff = diff;
                         }
-                        this.cooldown = 30;
-                        break;
                     }
                 }
                 if (best) {
                     this.projectiles.push(new Projectile(this.x, this.y, best));
+                    this.cooldown = 60;
                 }
             }
             else {
