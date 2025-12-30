@@ -1,10 +1,40 @@
 export class InputHandler {
-    constructor() {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.mouse = {
+            x: 0,
+            y: 0,
+            clicked: false,
+            down: false
+        };
+
+        window.addEventListener('mousemove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            this.mouse.x = e.clientX - rect.left;
+            this.mouse.y = e.clientY - rect.top;
+        });
+
+        window.addEventListener('mousedown', (e) => {
+
+            const rect = this.canvas.getBoundingClientRect();
+
+            this.mouse.x = e.clientX - rect.left;
+            this.mouse.y = e.clientY - rect.top;
+            
+            this.mouse.clicked = true;
+            this.mouse.down = true;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            this.mouse.down = false;
+        });
+
         this.keys = [];
-        this.allowedKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 't'];
+        this.allowedKeys = ['ArrowUp', 'w', 'ArrowDown', 's', 'ArrowLeft', 'a', 'ArrowRight', 'd', 't'];
 
         window.addEventListener('keydown', (e) => {
-            if (this.allowedKeys.includes(e.key) && this.keys.indexOf(e.key) === -1) {
+            if (this.allowedKeys.includes(e.key) && !this.keys.includes(e.key)) {
+                e.preventDefault(); 
                 this.keys.push(e.key);
             }
         });
@@ -17,5 +47,9 @@ export class InputHandler {
                 }
             }
         });
+    }
+
+    reset() {
+        this.mouse.clicked = false;
     }
 }

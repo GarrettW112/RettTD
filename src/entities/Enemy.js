@@ -1,10 +1,12 @@
+import { Tower } from './Tower.js'
+
 const wispSprite = new Image();
 wispSprite.src = 'src/assets/wisp.png';
 
 export class Enemy {
     constructor(x, y, player, towers) {
-        this.width = 35;
-        this.height = 35;
+        this.width = 50;
+        this.height = 50;
         this.x = x;
         this.y = y;
         this.hp = 100;
@@ -17,10 +19,10 @@ export class Enemy {
     draw(ctx) {
         ctx.drawImage(
             wispSprite,
-            this.x - (this.width / 2),          // X position (centered)
-            this.y - (this.height / 2),         // Y position (centered)
-            this.width,                         // Width to draw
-            this.height                         // Height to draw
+            this.x - (this.width / 2),
+            this.y - (this.height / 2),
+            this.width,
+            this.height
             );
     }
 
@@ -40,14 +42,14 @@ export class Enemy {
             let tempx = Math.floor(x/50);
             let tempy = Math.floor(y/50);
             if (tempx > 2 && tempx < 9 && tempy > 2 && tempy < 9) { 
-                if (this.towers[tempx-2][tempy-2].type == 0) {
+                if (!this.towers[tempx-2][tempy-2].tangible) {
                     this.x = x;
                     this.y = y;
                 }
                 else {
                     this.towers[tempx-2][tempy-2].hp--;
                     if (this.towers[tempx-2][tempy-2].hp == 0) {
-                        this.towers[tempx-2][tempy-2].type = 0;
+                        this.towers[tempx-2][tempy-2] = new Tower;
                     }
                 }
             }

@@ -4,9 +4,9 @@ import { Tower } from './entities/Tower.js'
 import { InputHandler } from './Input.js';
 
 export class Game {
-    constructor(width, height) {
-        this.width = width;
-        this.height = height;
+    constructor(canvas, context) {
+        this.width = canvas.width;
+        this.height = canvas.height;
         this.time = 0;
         this.projectiles = [];
         this.enemies = [];
@@ -14,12 +14,12 @@ export class Game {
         for (let x = 125; x <= 475; x += 50) {
             let temp = [];
             for (let y = 125; y <= 475; y += 50) {
-                temp.push(new Tower(x, y, this.projectiles, this.enemies));
+                temp.push(new Tower(x, y, 1, false, false));
             }
             this.towers.push(temp);
         }
-        this.player = new Player(this.width, this.height, this.towers);
-        this.input = new InputHandler();
+        this.player = new Player(this.width, this.height, this.towers, this.enemies, this.projectiles);
+        this.input = new InputHandler(canvas);
         this.stime = performance.now();
         this.second = 0;
         this.tstring = "00:00";
@@ -30,7 +30,7 @@ export class Game {
         const elapsedMS = performance.now() - this.stime;
         const totalSeconds = Math.floor(elapsedMS / 1000);
 
-        if (totalSeconds !== this.second) {
+        if (totalSeconds != this.second) {
             this.second = totalSeconds;
             
             const minutes = Math.floor(totalSeconds / 60);

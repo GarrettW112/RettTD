@@ -4,12 +4,12 @@ window.addEventListener('load', function() {
     // Setup Canvas
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
     canvas.width = 600;
     canvas.height = 600;
+    ctx.imageSmoothingEnabled = false;
 
     // Instantiate Game
-    const game = new Game(canvas.width, canvas.height);
+    const game = new Game(canvas, ctx);
 
     // Animation Loop
     function animate() {
