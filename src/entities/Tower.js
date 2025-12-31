@@ -1,6 +1,8 @@
 import { TowerProjectile } from './Proj.js';
 const towerSprite = new Image();
 towerSprite.src = 'src/assets/tower1.png';
+const wallSprite = new Image();
+wallSprite.src = 'src/assets/wall.png';
 
 export class Tower {
     constructor(x, y, hp, tan, sprite) {
@@ -45,7 +47,7 @@ export class Tower {
 
 export class WizardTower extends Tower {
     constructor(x, y, projectiles, enemies) {
-        super(x, y, 1000, true, towerSprite);
+        super(x, y, 1000, true, wallSprite);
         this.cooldown = 0;
         this.range = 150;
         this.atkspeed = 30;

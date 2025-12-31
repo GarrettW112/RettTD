@@ -1,6 +1,9 @@
 import { WizardTower } from './Tower.js'
 import { PlayerProjectile } from './Proj.js';
 
+const playerSprite = new Image();
+playerSprite.src = 'src/assets/player.png';
+
 export class Player {
     constructor(gameWidth, gameHeight, towers, enemies, projectiles) {
         this.gameWidth = gameWidth;
@@ -23,15 +26,25 @@ export class Player {
     draw(ctx) {
         if (this.iframes > 0) {
             if (Math.floor(this.iframes/10) % 2 == 0) {
-                ctx.fillStyle = 'black';
-                ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
+                ctx.drawImage(
+                    playerSprite,
+                    this.x - (this.width / 2),
+                    this.y - (this.height / 2),
+                    this.width,
+                    this.height
+                    );
             }
             this.iframes--;
         }
 
         else {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(this.x-(this.width/2), this.y-(this.height/2), this.width, this.height);
+            ctx.drawImage(
+                    playerSprite,
+                    this.x - (this.width / 2),
+                    this.y - (this.height / 2),
+                    this.width,
+                    this.height
+                    );
         }
     }
 
