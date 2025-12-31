@@ -30,7 +30,7 @@ export class InputHandler {
         });
 
         this.keys = [];
-        this.allowedKeys = ['ArrowUp', 'w', 'ArrowDown', 's', 'ArrowLeft', 'a', 'ArrowRight', 'd', 't'];
+        this.allowedKeys = ['ArrowUp', 'w', 'ArrowDown', 's', 'ArrowLeft', 'a', 'ArrowRight', 'd', 't', 'Escape'];
 
         window.addEventListener('keydown', (e) => {
             if (this.allowedKeys.includes(e.key) && !this.keys.includes(e.key)) {

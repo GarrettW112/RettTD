@@ -35,11 +35,11 @@ export class Tower {
         
         if (this.sprite) {
             ctx.drawImage( 
-            this.sprite,
-            this.x - (this.width / 2),
-            this.y - (this.height / 2),
-            this.width,
-            this.height
+                this.sprite,
+                this.x - (this.width / 2),
+                this.y - (this.height / 2),
+                this.width,
+                this.height
             );
         }
     }
@@ -47,7 +47,7 @@ export class Tower {
 
 export class WizardTower extends Tower {
     constructor(x, y, projectiles, enemies) {
-        super(x, y, 1000, true, wallSprite);
+        super(x, y, 1000, true, towerSprite);
         this.cooldown = 0;
         this.range = 150;
         this.atkspeed = 30;
