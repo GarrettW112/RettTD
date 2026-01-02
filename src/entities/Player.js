@@ -4,45 +4,49 @@ import { PlayerProjectile } from './Proj.js';
 const playerSprite = new Image();
 playerSprite.src = 'src/assets/player.png';
 
+const WIDTH = 50;
+const HEIGHT = 50;
+
 export class Player {
-    constructor(gameWidth, gameHeight, menus, towers, enemies, projectiles) {
+    constructor(gameWidth, gameHeight) {
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
-        this.width = 50;
-        this.height = 50;
         this.x = 300;
         this.y = 300;
         this.hp = 100;
         this.iframes = 0;
         this.speed = 5;
         this.atkcooldown = 0;
+        this.gold = 50;
         this.bmode = false;
         this.btoggle = true;
         this.mtoggle = true;
-        this.menus = menus;
-        this.towers = towers;
-        this.projectiles = projectiles;
     }
 
     draw(ctx) {
-        if (Math.floor(this.iframes/10) % 2 == 0) {
-            ctx.drawImage(
-                playerSprite,
-                this.x - (this.width / 2),
-                this.y - (this.height / 2),
-                this.width,
-                this.height
-                );
+        if (Math.floor(this.iframes/10) % 2 == 1) {
+            ctx.save();
+            ctx.globalAlpha = 0.2;
         }
+        
+        ctx.drawImage(
+            playerSprite,
+            this.x - (WIDTH / 2),
+            this.y - (HEIGHT / 2),
+            WIDTH,
+            HEIGHT
+            );
+
+        ctx.restore();
     }
 
-    update(input) {
+    update(input, towers, projectiles, enemies) {
         
         // If not in Buy-Mode checks attack cooldown
         if (this.atkcooldown == 0) {
             if (!this.bmode && input.mouse.down) {
-                this.projectiles.push(
-                    new PlayerProjectile(this.x, this.y, input.mouse.x, input.mouse.y, this.enemies));
+                projectiles.push(
+                    new PlayerProjectile(this.x, this.y, input.mouse.x, input.mouse.y, enemies));
                 this.atkcooldown = 180;
             }
         }
@@ -76,7 +80,7 @@ export class Player {
 
         // Checks if new x and y are valid
         if (0 > gridx || gridx > 7 || 0 > gridy || gridy > 7
-         || !this.towers[gridx][gridy].tangible) {
+         || !towers[gridx][gridy].tangible) {
 
             this.x = x;
             this.y = y;

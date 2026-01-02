@@ -52,20 +52,22 @@ export class PlayerProjectile extends Projectile {
         this.flash = 0;
         this.targetx = targetx;
         this.targety = targety;
-        this.enemies = enemies;
     }
 
     draw(ctx) {
         if (Math.floor(this.flash / 15) % 2 == 0) {
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(this.x-(this.size/2), this.y-(this.size/2), this.size, this.size);
+            ctx.fillStyle = "rgba(11, 0, 162, 1)";
         }
+        else {
+            ctx.fillStyle = "rgba(11, 0, 162, 0.2)";
+        }
+        ctx.fillRect(this.x-(this.size/2), this.y-(this.size/2), this.size, this.size);
     }
 
-    update() {
+    update(enemies) {
         this.move(this.targetx, this.targety, this.speed, 20);
         if (this.flag == 1) {
-            for (const enemy of this.enemies) {
+            for (const enemy of enemies) {
                 let xdiff = enemy.x - this.x;
                 let ydiff = enemy.y - this.y;
                 let diff = Math.sqrt((xdiff**2) + (ydiff**2))

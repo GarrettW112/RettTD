@@ -11,16 +11,28 @@ window.addEventListener('load', function() {
     // Instantiate Game
     const game = new Game(canvas, ctx);
 
+    let lastTime = 0;
+    const fps = 60;
+    const interval = 1000 / fps;
+
     // Animation Loop
-    function animate() {
-        ctx.fillStyle = 'green'; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    function animate(timeStamp) {
+
+        const deltaTime = timeStamp - lastTime;
         
-        game.update();
-        game.environment();
-        game.draw(ctx);
+        if (deltaTime >= interval) {
+            
+            lastTime = timeStamp - (deltaTime % interval);
+
+            ctx.fillStyle = 'green'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            game.update();
+            game.environment();
+            game.draw(ctx);
+        }
         
         requestAnimationFrame(animate);
     }
-    animate();
+    animate(0);
 });

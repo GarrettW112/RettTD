@@ -8,7 +8,7 @@ export class Game {
     constructor(canvas) {
         this.width = canvas.width;
         this.height = canvas.height;
-        this.time = 0;
+        this.envtime = 1;
         this.menus = new Menus(this.width, this.height);
         this.projectiles = [];
         this.enemies = [];
@@ -26,82 +26,91 @@ export class Game {
 
     update() {
         this.menus.update(this.input, this.player, this.towers, this.projectiles, this.enemies);
-        if (!this.menus.esc) {
-            this.player.update(this.input);
-            let keepIndex = 0;
-            for (const enemy of this.enemies) {
-                if (enemy.flag == 0) {
-                    this.enemies[keepIndex] = enemy;
-                    keepIndex++;
-                }
-                else {
-                    this.player.gold++;
-                }
-            }
-            this.enemies.length = keepIndex;
-            for (const z of this.enemies) {
-                z.update();
-            }
-            for (const x of this.towers) {
-                for (const y of x) {
-                    y.update();
-                }
-            }
 
-            keepIndex = 0;
-            for (const projectile of this.projectiles) {
-                if (projectile.flag == 0) {
-                    this.projectiles[keepIndex] = projectile;
-                    keepIndex++;
+        if (!this.menus.dflag && !this.menus.wflag) {
+            if (!this.menus.esc) {
+
+                this.player.update(this.input, this.towers, this.projectiles, this.enemies);
+
+                let keepIndex = 0;
+                for (const enemy of this.enemies) {
+                    if (enemy.flag == 0) {
+                        this.enemies[keepIndex] = enemy;
+                        keepIndex++;
+                    }
+                    else {
+                        this.player.gold++;
+                    }
                 }
-            }
-            this.projectiles.length = keepIndex;
-            for (const z of this.projectiles) {
-                z.update();
+                this.enemies.length = keepIndex;
+
+                for (const z of this.enemies) {
+                    z.update(this.player, this.towers);
+                }
+
+                for (const x of this.towers) {
+                    for (const y of x) {
+                        y.update(this.projectiles, this.enemies);
+                    }
+                }
+
+                keepIndex = 0;
+                for (const projectile of this.projectiles) {
+                    if (projectile.flag == 0) {
+                        this.projectiles[keepIndex] = projectile;
+                        keepIndex++;
+                    }
+                }
+
+                this.projectiles.length = keepIndex;
+                for (const z of this.projectiles) {
+                    z.update(this.enemies);
+                }
             }
         }
     }
 
     environment() {
-        if (!this.menus.esc) {
-            for (let x = 0; x < 1 + Math.floor(this.time/1000); x++) {
-                let rand = Math.floor(Math.random() * 400)
-                if (rand == 99) {
-                    this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), 0, this.player, this.towers));
+        if (!this.menus.dflag && !this.menus.wflag) {
+            if (!this.menus.esc) {
+                if (this.envtime % 60 == 0 && this.envtime < 1202) {
+                    let rand = Math.floor(Math.random() * 4)
+                    if (rand == 0) {
+                        this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), 0, this.player, this.towers));
+                    }
+                    if (rand == 1) {
+                        this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), this.height, this.player, this.towers));
+                    }
+                    if (rand == 2) {
+                        this.enemies.push(new Enemy(0, Math.floor(Math.random() * this.height), this.player, this.towers));
+                    }
+                    if (rand == 3) {
+                        this.enemies.push(new Enemy(this.width, Math.floor(Math.random() * this.height), this.player, this.towers));
+                    }
                 }
-                if (rand == 199) {
-                    this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), this.height, this.player, this.towers));
-                }
-                if (rand == 299) {
-                    this.enemies.push(new Enemy(0, Math.floor(Math.random() * this.height), this.player, this.towers));
-                }
-                if (rand == 399) {
-                    this.enemies.push(new Enemy(this.width, Math.floor(Math.random() * this.height), this.player, this.towers));
-                }
+                this.envtime++;
             }
-            this.time++;
         }
     }
 
     draw(context) {
 
         this.player.draw(context);
+
         for (const z of this.enemies) {
-            if (z.hp > 0) {
-                z.draw(context);
-            }
-            else {
-                z.death;
-            }
+            z.draw(context);
         }
+
         for (const x of this.towers) {
             for (const y of x) {
                 y.draw(context);
             }
         }
+
         for (const z of this.projectiles) {
             z.draw(context);
         }
+
         this.menus.draw(context);
     }
 }
