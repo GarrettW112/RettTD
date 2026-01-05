@@ -17,6 +17,7 @@ export class Menus {
         this.etoggle = true;
         this.bmode = false;
         this.bmenu = false;
+        this.highlight = false;
         this.buyx = 0;
         this.buyy = 0;
         this.stime = performance.now();
@@ -24,6 +25,7 @@ export class Menus {
         this.dflag = false;
         this.wflag = false;
         this.tstring = "00:00";
+        this.gold = 50;
     }
 
     draw(ctx) {
@@ -31,6 +33,11 @@ export class Menus {
         ctx.fillStyle = "black";
         ctx.textAlign = "right";
         ctx.fillText(this.tstring, this.width - 30, 30);
+
+        if (this.highlight) {
+                ctx.fillStyle = "rgba(255, 217, 0, 0.49)";
+                ctx.fillRect((50 * (this.gridx + 2)) + 1, (50 * (this.gridy + 2)) + 1, WIDTH - 3, HEIGHT - 3);
+        }
 
         if (this.dflag || this.wflag) {
             const boxWidth = 300;
@@ -77,6 +84,10 @@ export class Menus {
 
         else if (this.bmenu) {
 
+            ctx.fillStyle = "rgba(255, 217, 0, 0.7)";
+            ctx.fillRect((50 * (this.buyx + 2)) + 1, (50 * (this.buyy+2)) + 1, WIDTH - 3, HEIGHT - 3);
+            
+
             const boxWidth = 450;
             const boxHeight = 75;
             
@@ -106,7 +117,7 @@ export class Menus {
         else {}
     }
 
-    update(input, player, towers, projectiles, enemies) {
+    update(input, player, towers, magic, projectiles, enemies) {
 
         if (player.hp <= 0) {
             this.dflag = true;
@@ -144,23 +155,41 @@ export class Menus {
                 }
 
                 if (this.bmode) {
+
+                    this.gridx = Math.floor(input.mouse.x/50) - 2;
+                    this.gridy = Math.floor(input.mouse.y/50) - 2;
+
+                    if (0 <= this.gridx && this.gridx <= 7 && 0 <= this.gridy && this.gridy <= 7) {
+                        this.highlight = true;
+                        if (input.mouse.down) {
+                            this.buyx = this.gridx;
+                            this.buyy = this.gridy;
+                            this.bmenu = true;
+                        }
+                    }
+                    else {
+                        this.highlight = false;
+                    }
+
                     if (this.bmenu) {
                         if (input.mouse.down) {
                             if (5 <= input.mouse.y && input.mouse.y <= 55) {
                                 if (5 <= input.mouse.x && input.mouse.x <= 55) {
-                                    towers[this.gridx][this.gridy] = 
+                                    towers[this.buyx][this.buyy] = 
                                         new WizardTower(
-                                            towers[this.gridx][this.gridy].x, 
-                                            towers[this.gridx][this.gridy].y, 
+                                            towers[this.buyx][this.buyy].x, 
+                                            towers[this.buyx][this.buyy].y, 
                                             projectiles, 
                                             enemies
-                                        );this.bmenu = false;
+                                        );
+                                    magic.push(towers[this.buyx][this.buyy]);
+                                    this.bmenu = false;
                                 }
                                 if (60 <= input.mouse.x && input.mouse.x <= 110) {
-                                    towers[this.gridx][this.gridy] = 
+                                    towers[this.buyx][this.buyy] = 
                                         new Wall(
-                                            towers[this.gridx][this.gridy].x, 
-                                            towers[this.gridx][this.gridy].y, 
+                                            towers[this.buyx][this.buyy].x, 
+                                            towers[this.buyx][this.buyy].y, 
                                             projectiles, 
                                             enemies
                                         );
@@ -169,19 +198,14 @@ export class Menus {
                             }
                         }
                     }
-                    else {
-                        if (input.mouse.down) {
-                            this.gridx = Math.floor(input.mouse.x/50) - 2;
-                            this.gridy = Math.floor(input.mouse.y/50) - 2;
-                            if (0 <= this.gridx && this.gridx <= 7 && 0 <= this.gridy && this.gridy <= 7) {
-                                this.bmenu = true;
-                            }
-                        }
-                    }
                 }
 
                 if (this.btoggle && input.keys.includes('t')) {
                     this.bmode = !this.bmode;
+                    this.highlight = false;
+                    if (this.bmode == false) {
+                        this.bmenu = false;
+                    }
                     this.btoggle = false
                     player.bmode = this.bmode;
                     for (const x of towers) {

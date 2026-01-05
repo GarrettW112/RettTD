@@ -72,9 +72,12 @@ export class PlayerProjectile extends Projectile {
                 let ydiff = enemy.y - this.y;
                 let diff = Math.sqrt((xdiff**2) + (ydiff**2))
                 if (diff < (this.size * 10)) {
-                    enemy.hp -= 50;
+                    enemy.hp -= 25;
                     enemy.x += xdiff * (5/diff);
                     enemy.y += ydiff * (5/diff);
+                    if (enemy.hp <= 0) {
+                        enemy.flag = 1;
+                    }
                 }
             }
         }

@@ -1,4 +1,3 @@
-import { WizardTower } from './Tower.js'
 import { PlayerProjectile } from './Proj.js';
 
 const playerSprite = new Image();
@@ -17,7 +16,6 @@ export class Player {
         this.iframes = 0;
         this.speed = 5;
         this.atkcooldown = 0;
-        this.gold = 50;
         this.bmode = false;
         this.btoggle = true;
         this.mtoggle = true;

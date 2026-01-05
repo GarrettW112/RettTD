@@ -1,6 +1,6 @@
 import { Menus } from './entities/Menus.js';
 import { Player } from './entities/Player.js';
-import { Enemy } from './entities/Enemy.js';
+import { Wisp } from './entities/Enemy.js';
 import { Tower } from './entities/Tower.js'
 import { InputHandler } from './Input.js';
 
@@ -9,7 +9,6 @@ export class Game {
         this.width = canvas.width;
         this.height = canvas.height;
         this.envtime = 1;
-        this.menus = new Menus(this.width, this.height);
         this.projectiles = [];
         this.enemies = [];
         this.towers = [];
@@ -21,11 +20,13 @@ export class Game {
             this.towers.push(temp);
         }
         this.player = new Player(this.width, this.height, this.menus, this.towers, this.enemies, this.projectiles);
+        this.magic = [this.player];
+        this.menus = new Menus(this.width, this.height);
         this.input = new InputHandler(canvas);
     }
 
     update() {
-        this.menus.update(this.input, this.player, this.towers, this.projectiles, this.enemies);
+        this.menus.update(this.input, this.player, this.towers, this.magic, this.projectiles, this.enemies);
 
         if (!this.menus.dflag && !this.menus.wflag) {
             if (!this.menus.esc) {
@@ -76,16 +77,16 @@ export class Game {
                 if (this.envtime % 60 == 0 && this.envtime < 1202) {
                     let rand = Math.floor(Math.random() * 4)
                     if (rand == 0) {
-                        this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), 0, this.player, this.towers));
+                        this.enemies.push(new Wisp(Math.floor(Math.random() * this.width), 0));
                     }
                     if (rand == 1) {
-                        this.enemies.push(new Enemy(Math.floor(Math.random() * this.width), this.height, this.player, this.towers));
+                        this.enemies.push(new Wisp(Math.floor(Math.random() * this.width), this.height));
                     }
                     if (rand == 2) {
-                        this.enemies.push(new Enemy(0, Math.floor(Math.random() * this.height), this.player, this.towers));
+                        this.enemies.push(new Wisp(0, Math.floor(Math.random() * this.height)));
                     }
                     if (rand == 3) {
-                        this.enemies.push(new Enemy(this.width, Math.floor(Math.random() * this.height), this.player, this.towers));
+                        this.enemies.push(new Wisp(this.width, Math.floor(Math.random() * this.height)));
                     }
                 }
                 this.envtime++;
