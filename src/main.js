@@ -28,7 +28,6 @@ window.addEventListener('load', function() {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             game.update();
-            game.environment();
             game.draw(ctx);
         }
         

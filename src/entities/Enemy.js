@@ -40,9 +40,9 @@ export class Enemy {
         const ydiff = y - this.y;
         const diff = Math.sqrt((xdiff**2) + (ydiff**2));
         const ratio = this.speed / diff;
-        const newx = this.x + (xdiff * ratio);
-        const newy = this.y + (ydiff * ratio);
-        return [newx, newy, diff];
+        const changex = xdiff * ratio;
+        const changey = ydiff * ratio;
+        return [changex, changey, diff];
     }
 
     xtowers(x, y, towers) {
@@ -52,7 +52,12 @@ export class Enemy {
             if (towers[tempx-2][tempy-2].tangible) {
                 towers[tempx-2][tempy-2].hp--;
                 if (towers[tempx-2][tempy-2].hp == 0) {
-                        towers[tempx-2][tempy-2] = new Tower;
+                        towers[tempx-2][tempy-2] = 
+                        new Tower(
+                            towers[tempx-2][tempy-2].x, 
+                            towers[tempx-2][tempy-2].y, 
+                            towers[tempx-2][tempy-2].bmode
+                        );
                     }
                 return true;
             }
@@ -66,34 +71,33 @@ export class Wisp extends Enemy {
         super(x, y, 100, 2, wispSprite);
     }
 
-    update(player, towers) {
+    update(player, towers, magic) {
 
-        // tdiff = this.diff(this.target.x, this.target.y);
+        let target = player;
 
-        // for (const x of magic) {
-        //     for (const y of x) {
-        //         if (y.tangible)
-        //         let tempdiff = this.diff(y.x, y.y)
-        //         if (this.tdiff > tempdiff) {
-        //             this.target = y;
-        //             this.tdiff = tempdiff;
-        //         }
-        //     }
-        // }
+        let tdiff = this.diff(target.x, target.y);
 
-        const coords = this.move(player.x, player.y);
+        for (const x of magic) {
+            let tempdiff = this.diff(x.x, x.y);
+            if (tdiff > tempdiff) {
+                target = x;
+                tdiff = tempdiff;
+            }
+        }
+
+        const coords = this.move(target.x, target.y);
         if (this.diff(player.x, player.y) < 20) {
             if (player.iframes == 0) {
                 player.hp -= 10;
-                player.x += 30*(coords[0] - this.x);
-                player.y += 30*(coords[1] - this.y);
+                player.x += 30*(coords[0]);
+                player.y += 30*(coords[1]);
                 player.iframes = 100;
             }
         }
         else {
-            if (!this.xtowers(coords[0], coords[1], towers)) {
-                this.x = coords[0];
-                this.y = coords[1];
+            if (!this.xtowers(coords[0] + this.x, coords[1] + this.y, towers)) {
+                this.x += coords[0];
+                this.y += coords[1];
             }
         }
     }
@@ -102,7 +106,11 @@ export class Wisp extends Enemy {
 export class Poltergheist extends Enemy {
     constructor(x, y) {
         super(x, y, 100, 1, wispSprite);
+        this.xmove, this.ymove = move(300, 300);
+    }
 
+    update(player, towers) {
+        
     }
 }
 
@@ -121,6 +129,39 @@ export class Zombie extends Enemy {
 export class Golem extends Enemy {
     constructor(x, y) {
         super(x, y, 400, .5, wispSprite);
+    }
+
+    update(player, towers) {
+
+        let target = towers[3][3];
+
+        let tdiff = this.diff(target.x, target.y);
+
+        for (const x of towers) {
+            for (const y of x) {
+                let tempdiff = this.diff(y.x, y.y);
+                if (tdiff > tempdiff) {
+                    target = y;
+                    tdiff = tempdiff;
+                }
+            }
+        }
+
+        const coords = this.move(target.x, target.y);
+        if (this.diff(player.x, player.y) < 20) {
+            if (player.iframes == 0) {
+                player.hp -= 10;
+                player.x += 20*(coords[0] - this.x);
+                player.y += 20*(coords[1] - this.y);
+                player.iframes = 100;
+            }
+        }
+        else {
+            if (!this.xtowers(coords[0], coords[1], towers)) {
+                this.x = coords[0];
+                this.y = coords[1];
+            }
+        }
     }
 }
 

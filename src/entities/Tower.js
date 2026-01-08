@@ -8,31 +8,17 @@ const WIDTH = 50
 const HEIGHT = 50
 
 export class Tower {
-    constructor(x, y, hp, tan, sprite) {
-        this.sprite = sprite;
-        this.bmode = 0;
-        this.tangible = tan
+    constructor(x, y, bmode, sprite) {
         this.x = x;
         this.y = y;
-        this.hp = hp;
+        this.tangible = false;
+        this.hp = 100;
+        this.sprite = sprite;
     }
 
     update() {}
 
     draw(ctx) {
-
-        if (this.bmode) {
-            const drawX = this.x - (WIDTH / 2);
-            const drawY = this.y - (HEIGHT / 2);
-
-            ctx.save();
-            ctx.strokeStyle = 'yellow';
-            ctx.lineWidth = 2;
-
-            ctx.strokeRect(drawX, drawY, WIDTH - 1, HEIGHT - 1);
-        
-            ctx.restore();
-        }
         
         if (this.sprite) {
             ctx.drawImage( 
@@ -47,8 +33,10 @@ export class Tower {
 }
 
 export class WizardTower extends Tower {
-    constructor(x, y) {
-        super(x, y, 1000, true, towerSprite);
+    constructor(x, y, bmode) {
+        super(x, y, bmode, towerSprite);
+        this.tangible = true;
+        this.hp = 1000;
         this.cooldown = 0;
         this.range = 150;
         this.atkspeed = 30;
@@ -84,9 +72,19 @@ export class WizardTower extends Tower {
     }
 }
 
-export class Wall extends Tower {
+export class Core extends Tower {
     constructor(x, y) {
-        super(x, y, 2000, true, wallSprite);
+        super(x, y, false, coreSprite);
+        this.tangible = false;
+        this.hp = 3000;
+    }
+}
+
+export class Wall extends Tower {
+    constructor(x, y, bmode) {
+        super(x, y, bmode, wallSprite);
+        this.tangible = true;
+        this.hp = 2000;
     }
 
     update() {
