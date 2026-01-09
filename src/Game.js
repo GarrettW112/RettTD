@@ -2,6 +2,7 @@ import { Menus } from './entities/Menus.js';
 import { Player } from './entities/Player.js';
 import { Environment } from './entities/Environment.js';
 import { Tower } from './entities/Tower.js';
+import { Core } from './entities/Tower.js';
 import { InputHandler } from './Input.js';
 
 export class Game {
@@ -15,18 +16,23 @@ export class Game {
         for (let x = 125; x <= 475; x += 50) {
             let temp = [];
             for (let y = 125; y <= 475; y += 50) {
-                temp.push(new Tower(x, y, false));
+                temp.push(new Tower(x, y));
             }
             this.towers.push(temp);
         }
-        this.player = new Player(this.width, this.height, this.menus, this.towers, this.enemies, this.projectiles);
-        this.magic = [];
+        this.core = new Core(300, 300);
+        this.towers[3][3] = this.core;
+        this.towers[3][4] = this.core;
+        this.towers[4][3] = this.core;
+        this.towers[4][4] = this.core;
+        this.player = new Player(this.width, this.height);
+        this.magic = [this.core];
         this.menus = new Menus(this.width, this.height);
         this.input = new InputHandler(canvas);
     }
 
     update() {
-        this.menus.update(this.input, this.player, this.towers, this.magic, this.enemies);
+        this.menus.update(this.input, this.player, this.towers, this.magic, this.environment, this.enemies);
 
         if (!this.menus.dflag && !this.menus.wflag && !this.menus.esc) {
 
@@ -50,7 +56,7 @@ export class Game {
             this.enemies.length = keepIndex;
 
             for (const z of this.enemies) {
-                z.update(this.player, this.towers, this.magic);
+                z.update(this.player, this.towers, this.magic, this.projectiles);
             }
 
             for (const x of this.towers) {
@@ -78,7 +84,7 @@ export class Game {
 
             this.projectiles.length = keepIndex;
             for (const z of this.projectiles) {
-                z.update(this.enemies);
+                z.update(this.enemies, this.player, this.magic);
             }
         }
     }

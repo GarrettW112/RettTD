@@ -2,7 +2,7 @@ class Projectile {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.flag = 0;
+        this.flag = false;
     }
 
     move(targetx, targety, speed, size) {
@@ -83,4 +83,46 @@ export class PlayerProjectile extends Projectile {
         }
         this.flash++;
     }
+}
+
+export class Arrow extends Projectile {
+    constructor(x, y, xrat, yrat) {
+        super(x, y);
+        this.xrat = xrat;
+        this.yrat = yrat;
+        this.speed = 5;
+        this.size = 10;
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(this.x-(this.size/2), this.y-(this.size/2), this.size, this.size);
+    }
+
+    update(enemies, player, magic) {
+        let diff = Math.sqrt(((player.x - this.x)**2) + ((player.y - this.y)**2));
+        if (diff < 25) {
+            player.hp -= 10;
+            player.x += 5*(player.x - this.x);
+            player.y += 5*(player.y - this.y);
+            player.iframes = 100;
+            this.flag = true;
+        }
+
+        else {
+            for (const item of magic) {
+                diff = Math.sqrt(((item.x - this.x)**2) + ((item.y - this.y)**2));
+                if (diff < 20) {
+                    item.hp -= 150;
+                    this.flag = true;
+                    break;
+                }
+            }
+        }
+        if (!this.flag) {
+            this.x += (this.xrat * this.speed);
+            this.y += (this.yrat * this.speed);
+        }
+    }
+
 }

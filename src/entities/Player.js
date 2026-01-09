@@ -16,9 +16,7 @@ export class Player {
         this.iframes = 0;
         this.speed = 5;
         this.atkcooldown = 0;
-        this.bmode = false;
-        this.btoggle = true;
-        this.mtoggle = true;
+        this.bmode = true;
     }
 
     draw(ctx) {
@@ -77,7 +75,7 @@ export class Player {
         let gridy = Math.floor(y/50) - 2;
 
         // Checks if new x and y are valid
-        if (0 > gridx || gridx > 7 || 0 > gridy || gridy > 7
+        if (0 >= gridx || gridx >= 7 || 0 >= gridy || gridy >= 7
          || !towers[gridx][gridy].tangible) {
 
             this.x = x;
@@ -94,3 +92,9 @@ export class Player {
         }
     }
 }
+// Special Attacks/Upgrades:
+// Stunning Stike -> Divine Bolt -> Time Stop
+// Magnetic Blast -> Black Hole -> Purple
+// Repelling Blast -> Repulsor -> Purple
+// Frost Lance -> Blizzard -> Time Stop
+// Dash -> Teleport -> Global Teleport

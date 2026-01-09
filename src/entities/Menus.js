@@ -15,11 +15,11 @@ export class Menus {
         this.height = height;
         this.esc = false;
         this.etoggle = true;
-        this.bmode = false;
         this.bmenu = false;
         this.brokeframes = 0;
         this.highlight = false;
         this.highlightstart = false;
+        this.level = 1;
         this.envactive = false;
         this.buyx = 0;
         this.buyy = 0;
@@ -161,7 +161,7 @@ export class Menus {
         }
     }
 
-    update(input, player, towers, magic, enemies) {
+    update(input, player, towers, magic, environment, enemies) {
 
         if (this.etoggle && input.keys.includes('Escape')) {
                 this.esc = !this.esc;
@@ -194,7 +194,8 @@ export class Menus {
                 }
 
                 if (this.second > 30 && enemies.length == 0) {
-                    this.wflag = true;
+                    this.envactive = false;
+                    player.bmode = true;
                 }
             }
 
@@ -203,6 +204,7 @@ export class Menus {
                 if (395 <= input.mouse.x && input.mouse.x <= 595 && 520 <= input.mouse.y && input.mouse.y <= 595) {
                     this.highlightstart = true;
                     if (input.mouse.down) {
+                        environment.envtime = 1;
                         this.envactive = true;
                         this.stime = performance.now()
                         player.bmode = false;
@@ -212,73 +214,57 @@ export class Menus {
                     this.highlightstart = false;
                 }
 
-                if (this.bmode) {
+                this.gridx = Math.floor(input.mouse.x/50) - 2;
+                this.gridy = Math.floor(input.mouse.y/50) - 2;
 
-                    this.gridx = Math.floor(input.mouse.x/50) - 2;
-                    this.gridy = Math.floor(input.mouse.y/50) - 2;
-
-                    if (0 <= this.gridx && this.gridx <= 7 && 0 <= this.gridy && this.gridy <= 7) {
-                        this.highlight = true;
-                        if (input.mouse.down) {
-                            this.buyx = this.gridx;
-                            this.buyy = this.gridy;
-                            this.bmenu = true;
-                        }
+                if (0 <= this.gridx && this.gridx <= 7 && 0 <= this.gridy && this.gridy <= 7) {
+                    this.highlight = true;
+                    if (input.mouse.down) {
+                        this.buyx = this.gridx;
+                        this.buyy = this.gridy;
+                        this.bmenu = true;
                     }
-                    else {
-                        this.highlight = false;
-                    }
+                }
+                else {
+                    this.highlight = false;
+                }
 
-                    if (this.bmenu) {
-                        if (input.mouse.down) {
-                            if (5 <= input.mouse.y && input.mouse.y <= 55) {
-                                if (5 <= input.mouse.x && input.mouse.x <= 55) {
-                                    if (this.gold >= 20) {
-                                        towers[this.buyx][this.buyy] = 
-                                            new WizardTower(
-                                                towers[this.buyx][this.buyy].x, 
-                                                towers[this.buyx][this.buyy].y, 
-                                                this.bmode
-                                            );
-                                        magic.push(towers[this.buyx][this.buyy]);
-                                        this.bmenu = false;
-                                        this.gold -= 20;
-                                    }
-                                    else {
-                                        this.brokeframes = 60;
-                                    }
+                if (this.bmenu) {
+                    if (input.mouse.down) {
+                        if (5 <= input.mouse.y && input.mouse.y <= 55) {
+                            if (5 <= input.mouse.x && input.mouse.x <= 55) {
+                                if (this.gold >= 20) {
+                                    towers[this.buyx][this.buyy] = 
+                                        new WizardTower(
+                                            towers[this.buyx][this.buyy].x, 
+                                            towers[this.buyx][this.buyy].y, 
+                                            this.bmode
+                                        );
+                                    magic.push(towers[this.buyx][this.buyy]);
+                                    this.bmenu = false;
+                                    this.gold -= 20;
                                 }
-                                if (60 <= input.mouse.x && input.mouse.x <= 110) {
-                                    if (this.gold >= 10) {
-                                        towers[this.buyx][this.buyy] = 
-                                            new Wall(
-                                                towers[this.buyx][this.buyy].x, 
-                                                towers[this.buyx][this.buyy].y, 
-                                                this.bmode
-                                            );
-                                        this.bmenu = false;
-                                        this.gold -=10;
-                                    }
-                                    else {
-                                        this.brokeframes = 60;
-                                    }
+                                else {
+                                    this.brokeframes = 60;
+                                }
+                            }
+                            if (60 <= input.mouse.x && input.mouse.x <= 110) {
+                                if (this.gold >= 10) {
+                                    towers[this.buyx][this.buyy] = 
+                                        new Wall(
+                                            towers[this.buyx][this.buyy].x, 
+                                            towers[this.buyx][this.buyy].y, 
+                                            this.bmode
+                                        );
+                                    this.bmenu = false;
+                                    this.gold -=10;
+                                }
+                                else {
+                                    this.brokeframes = 60;
                                 }
                             }
                         }
                     }
-                }
-
-                if (this.btoggle && input.keys.includes('t')) {
-                    this.bmode = !this.bmode;
-                    this.highlight = false;
-                    if (this.bmode == false) {
-                        this.bmenu = false;
-                    }
-                    this.btoggle = false
-                    player.bmode = this.bmode;
-                }
-                if (!input.keys.includes('t')) {
-                    this.btoggle = true;
                 }
             }
         }

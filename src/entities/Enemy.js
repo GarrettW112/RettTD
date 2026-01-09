@@ -1,4 +1,5 @@
 import { Tower } from './Tower.js'
+import { Arrow } from './Proj.js'
 
 const wispSprite = new Image();
 wispSprite.src = 'src/assets/wisp.png';
@@ -45,9 +46,9 @@ export class Enemy {
         return [changex, changey, diff];
     }
 
-    xtowers(x, y, towers) {
-        const tempx = Math.floor(x/50);
-        const tempy = Math.floor(y/50);
+    xtowers(towers) {
+        const tempx = Math.floor(this.x/50);
+        const tempy = Math.floor(this.y/50);
         if (tempx >= 2 && tempx <= 9 && tempy >= 2 && tempy <= 9) { 
             if (towers[tempx-2][tempy-2].tangible) {
                 towers[tempx-2][tempy-2].hp--;
@@ -61,6 +62,19 @@ export class Enemy {
                     }
                 return true;
             }
+        }
+        return false;
+    }
+
+    xplayer(player) { 
+        if (this.diff(player.x, player.y) < 20) {
+            if (player.iframes == 0) {
+                player.hp -= 10;
+                player.x += 5*(player.x - this.x);
+                player.y += 5*(player.y - this.y);
+                player.iframes = 100;
+            }
+            return true;
         }
         return false;
     }
@@ -85,20 +99,10 @@ export class Wisp extends Enemy {
             }
         }
 
-        const coords = this.move(target.x, target.y);
-        if (this.diff(player.x, player.y) < 20) {
-            if (player.iframes == 0) {
-                player.hp -= 10;
-                player.x += 30*(coords[0]);
-                player.y += 30*(coords[1]);
-                player.iframes = 100;
-            }
-        }
-        else {
-            if (!this.xtowers(coords[0] + this.x, coords[1] + this.y, towers)) {
-                this.x += coords[0];
-                this.y += coords[1];
-            }
+        if (!this.xtowers(towers) && !this.xplayer(player)) {
+            const coords = this.move(target.x, target.y);
+            this.x += coords[0];
+            this.y += coords[1];
         }
     }
 }
@@ -109,14 +113,55 @@ export class Poltergheist extends Enemy {
         this.xmove, this.ymove = move(300, 300);
     }
 
-    update(player, towers) {
-        
+    update(player, core) {
+        if (this.diff(core.x, core.y) < 25) {
+            core.hp--;
+        }
+        else {
+            this.x += this.xmove;
+            this.y += this.ymove;
+        }
     }
 }
 
 export class Skeleton extends Enemy {
     constructor(x, y) {
         super(x, y, 50, 1, wispSprite);
+        this.atkcd = 150;
+    }
+
+    update(player, towers, magic, projectiles) {
+        let target = player;
+
+        let tdiff = this.diff(target.x, target.y);
+
+        for (const x of magic) {
+            let tempdiff = this.diff(x.x, x.y);
+            if (tdiff > tempdiff) {
+                target = x;
+                tdiff = tempdiff;
+            }
+        }
+
+        if (tdiff <= 200) {
+            if (this.atkcd == 0) {
+                const xdiff = target.x - this.x;
+                const ydiff = target.y - this.y;
+                const xrat = xdiff / Math.sqrt(xdiff**2 + ydiff**2);
+                const yrat = ydiff / Math.sqrt(xdiff**2 + ydiff**2);
+                projectiles.push(new Arrow(this.x, this.y, xrat, yrat));
+                this.atkcd = 150;
+            }
+            else {
+                this.atkcd--;
+            }
+        }
+
+        else {
+            const coords = this.move(target.x, target.y);
+            this.x += coords[0];
+            this.y += coords[1];
+        }
     }
 }
 

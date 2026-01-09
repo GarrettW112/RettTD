@@ -1,4 +1,5 @@
 import { Wisp } from './Enemy.js';
+import { Skeleton } from './Enemy.js';
 
 export class Environment {
     constructor(width, height) {
@@ -12,7 +13,7 @@ export class Environment {
 
         // Introduces Wisps & Basic Mechanics
 
-        if (this.level == 1) {
+        if (this.level == 2) {
             if (this.envtime % 60 == 0 && this.envtime < 1202) {
                 let rand = Math.floor(Math.random() * 4)
                 if (rand == 0) {
@@ -33,8 +34,23 @@ export class Environment {
 
         // Introduces Skeletons & Upgrades
 
-        if (this.level == 2) {
-
+        if (this.level == 1) {
+            if (this.envtime % 60 == 0 && this.envtime < 1202) {
+                let rand = Math.floor(Math.random() * 4)
+                if (rand == 0) {
+                    enemies.push(new Skeleton(Math.floor(Math.random() * this.width), 0));
+                }
+                if (rand == 1) {
+                    enemies.push(new Skeleton(Math.floor(Math.random() * this.width), this.height));
+                }
+                if (rand == 2) {
+                    enemies.push(new Skeleton(0, Math.floor(Math.random() * this.height)));
+                }
+                if (rand == 3) {
+                    enemies.push(new Skeleton(this.width, Math.floor(Math.random() * this.height)));
+                }
+            }
+            this.envtime++;
         }
 
         // Introduces Poltergheists & Core Defense

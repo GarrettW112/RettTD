@@ -8,7 +8,7 @@ const WIDTH = 50
 const HEIGHT = 50
 
 export class Tower {
-    constructor(x, y, bmode, sprite) {
+    constructor(x, y, sprite) {
         this.x = x;
         this.y = y;
         this.tangible = false;
@@ -33,8 +33,8 @@ export class Tower {
 }
 
 export class WizardTower extends Tower {
-    constructor(x, y, bmode) {
-        super(x, y, bmode, towerSprite);
+    constructor(x, y) {
+        super(x, y, towerSprite);
         this.tangible = true;
         this.hp = 1000;
         this.cooldown = 0;
@@ -74,15 +74,33 @@ export class WizardTower extends Tower {
 
 export class Core extends Tower {
     constructor(x, y) {
-        super(x, y, false, coreSprite);
-        this.tangible = false;
+        super(x, y, wallSprite);
         this.hp = 3000;
+    }
+
+    // draw(ctx) {
+        
+    //     if (this.sprite) {
+    //         ctx.drawImage( 
+    //             this.sprite,
+    //             250,
+    //             250,
+    //             100,
+    //             100
+    //         );
+    //     }
+    // }
+
+    update() {
+        if (this.hp <= 0) {
+            
+        }
     }
 }
 
 export class Wall extends Tower {
-    constructor(x, y, bmode) {
-        super(x, y, bmode, wallSprite);
+    constructor(x, y) {
+        super(x, y, wallSprite);
         this.tangible = true;
         this.hp = 2000;
     }
