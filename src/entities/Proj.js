@@ -37,8 +37,34 @@ export class TowerProjectile extends Projectile {
         this.move(this.target.x, this.target.y, this.speed, this.size);
         if (this.flag == 1) {
             this.target.hp -= 25;
-            if (this.target.hp <= 0) {
-                this.target.flag = 1;
+        }
+    }
+}
+
+export class NecProjectile extends Projectile {
+    constructor(x, y, enemy) {
+        super(x, y);
+        this.speed = 7;
+        this.size = 5;
+        this.target = enemy;
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = 'purple';
+        ctx.fillRect(this.x-(this.size/2), this.y-(this.size/2), this.size, this.size);
+    }
+    
+    update() {
+        this.move(this.target.x, this.target.y, this.speed, this.size);
+        if (this.flag == 1) {
+            if (this.target.speed) {
+                if (this.target.iframes == 0) {
+                    this.target.hp -= 25;
+                    this.target.iframes += 120;
+                }
+            }
+            else {
+                this.target.hp -= 100;
             }
         }
     }
@@ -101,7 +127,7 @@ export class Arrow extends Projectile {
 
     update(enemies, player, magic) {
         let diff = Math.sqrt(((player.x - this.x)**2) + ((player.y - this.y)**2));
-        if (diff < 25) {
+        if (diff < 25 && player.iframes == 0) {
             player.hp -= 10;
             player.x += 5*(player.x - this.x);
             player.y += 5*(player.y - this.y);

@@ -45,7 +45,7 @@ export class Game {
 
             let keepIndex = 0;
             for (const enemy of this.enemies) {
-                if (enemy.flag == 0) {
+                if (enemy.hp > 0) {
                     this.enemies[keepIndex] = enemy;
                     keepIndex++;
                 }
@@ -56,7 +56,7 @@ export class Game {
             this.enemies.length = keepIndex;
 
             for (const z of this.enemies) {
-                z.update(this.player, this.towers, this.magic, this.projectiles);
+                z.update(this.player, this.towers, this.magic, this.projectiles, this.enemies);
             }
 
             for (const x of this.towers) {

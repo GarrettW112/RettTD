@@ -1,5 +1,5 @@
 import { Tower } from './Tower.js'
-import { Arrow } from './Proj.js'
+import { Arrow, NecProjectile } from './Proj.js'
 
 const wispSprite = new Image();
 wispSprite.src = 'src/assets/wisp.png';
@@ -14,7 +14,6 @@ export class Enemy {
         this.hp = hp;
         this.speed = speed;
         this.sprite = sprite;
-        this.flag = false;
     }
 
     draw(ctx) {
@@ -213,5 +212,89 @@ export class Golem extends Enemy {
 export class NecNovice extends Enemy {
     constructor(x, y) {
         super(x, y, 200, 2, wispSprite);
+        this.atkcd = 150;
+        this.summoncd = 120;
     }
+
+    update(player, towers, magic, projectiles, enemies) {
+        
+        let target = player;
+
+        let tdiff = this.diff(target.x, target.y);
+
+        for (const x of magic) {
+            let tempdiff = this.diff(x.x, x.y);
+            if (tdiff > tempdiff) {
+                target = x;
+                tdiff = tempdiff;
+            }
+        }
+
+        if (tdiff <= 200) {
+            if (this.atkcd == 0) {
+                projectiles.push(new NecProjectile(this.x, this.y, target));
+                this.atkcd = 150;
+            }
+            else {
+                this.atkcd--;
+            }
+        }
+
+        else {
+            const coords = this.move(target.x, target.y);
+            this.x += coords[0];
+            this.y += coords[1];
+        }
+
+        if (this.summoncd == 0) {
+            enemies.push(new Wisp(this.x, this.y));
+            this.summoncd = 360
+        }
+
+        else {
+            this.summoncd--;
+        }
+    }
+}
+
+export class ZombieCaptain {
+    constructor(x, y) { }
+    //     super(x, y, 1500, 2, wispSprite);
+    //     this.leap = false;
+    //     this.dash = false;
+    //     this.xdash;
+    //     this.ydash;
+    //     this.dashflag = false;
+    //     this.timer = 0;
+    // }
+
+    // dash(player) {
+    //     let diff = Math.sqrt(((player.x - this.x)**2) + ((player.y - this.y)**2));
+    //     if (diff < 25 && player.iframes == 0) {
+    //         player.hp -= 30;
+    //         player.x += 5*(player.x - this.x);
+    //         player.y += 5*(player.y - this.y);
+    //         player.iframes = 100;
+    //         this.flag = true;
+    //     }
+
+    //     else {
+    //         for (const item of magic) {
+    //             diff = Math.sqrt(((item.x - this.x)**2) + ((item.y - this.y)**2));
+    //             if (diff < 20) {
+    //                 item.hp -= 1000;
+    //                 this.flag = true;
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     if (!this.flag) {
+    //         this.x += (this.xdash);
+    //         this.y += (this.ydash);
+    //     }
+    // }
+
+    // leap() {
+
+    // }
 }

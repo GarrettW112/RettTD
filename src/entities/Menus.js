@@ -1,5 +1,4 @@
-import { WizardTower } from './Tower.js'
-import { Wall } from './Tower.js'
+import { WizardTower, Wall } from './Tower.js'
 
 const towerSprite = new Image();
 towerSprite.src = 'src/assets/tower1.png';
@@ -26,7 +25,6 @@ export class Menus {
         this.stime;
         this.second = 0;
         this.dflag = false;
-        this.wflag = false;
         this.tstring = "00:00";
         this.gold = 50;
     }
@@ -117,7 +115,7 @@ export class Menus {
             }
         }
 
-        if (this.dflag || this.wflag) {
+        if (this.dflag) {
             const boxWidth = 300;
             const boxHeight = 100;
             
@@ -195,6 +193,7 @@ export class Menus {
 
                 if (this.second > 30 && enemies.length == 0) {
                     this.envactive = false;
+                    this.level++;
                     player.bmode = true;
                 }
             }
@@ -205,6 +204,7 @@ export class Menus {
                     this.highlightstart = true;
                     if (input.mouse.down) {
                         environment.envtime = 1;
+                        environment.level = this.level;
                         this.envactive = true;
                         this.stime = performance.now()
                         player.bmode = false;
