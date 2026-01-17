@@ -12,6 +12,8 @@ export class Enemy {
         this.x = x;
         this.y = y;
         this.hp = hp;
+        this.stun = 0;
+        this.slow = 0;
         this.speed = speed;
         this.sprite = sprite;
     }
@@ -81,44 +83,58 @@ export class Enemy {
 
 export class Wisp extends Enemy {
     constructor(x, y) {
-        super(x, y, 100, 2, wispSprite);
+        super(x, y, 100, 1.5, wispSprite);
     }
 
     update(player, towers, magic) {
 
-        let target = player;
+        if (this.stun == 0) {
 
-        let tdiff = this.diff(target.x, target.y);
+            let target = player;
 
-        for (const x of magic) {
-            let tempdiff = this.diff(x.x, x.y);
-            if (tdiff > tempdiff) {
-                target = x;
-                tdiff = tempdiff;
+            let tdiff = this.diff(target.x, target.y);
+
+            for (const x of magic) {
+                let tempdiff = this.diff(x.x, x.y);
+                if (tdiff > tempdiff) {
+                    target = x;
+                    tdiff = tempdiff;
+                }
+            }
+
+            if (!this.xtowers(towers) && !this.xplayer(player)) {
+                const coords = this.move(target.x, target.y);
+                this.x += coords[0];
+                this.y += coords[1];
             }
         }
 
-        if (!this.xtowers(towers) && !this.xplayer(player)) {
-            const coords = this.move(target.x, target.y);
-            this.x += coords[0];
-            this.y += coords[1];
+        else {
+            this.stun--;
         }
     }
 }
 
 export class Poltergheist extends Enemy {
     constructor(x, y) {
-        super(x, y, 100, 1, wispSprite);
+        super(x, y, 100, .75, wispSprite);
         this.xmove, this.ymove = move(300, 300);
     }
 
     update(player, core) {
-        if (this.diff(core.x, core.y) < 25) {
-            core.hp--;
+
+        if (this.stun == 0) {
+            if (this.diff(core.x, core.y) < 25) {
+                core.hp--;
+            }
+            else {
+                this.x += this.xmove;
+                this.y += this.ymove;
+            }
         }
+
         else {
-            this.x += this.xmove;
-            this.y += this.ymove;
+            this.stun--;
         }
     }
 }
@@ -211,7 +227,7 @@ export class Golem extends Enemy {
 
 export class NecNovice extends Enemy {
     constructor(x, y) {
-        super(x, y, 200, 2, wispSprite);
+        super(x, y, 200, 1, wispSprite);
         this.atkcd = 150;
         this.summoncd = 120;
     }

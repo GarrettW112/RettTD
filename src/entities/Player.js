@@ -14,8 +14,18 @@ export class Player {
         this.y = 300;
         this.hp = 100;
         this.iframes = 0;
-        this.speed = 5;
-        this.atkcooldown = 0;
+        this.speed = 3;
+        this.dashcd = 0;
+        this.mana = 100;
+        this.tpush = false;
+        this.qdown = false;
+        this.tpull = false;
+        this.edown = false;
+        this.tstun = false;
+        this.fdown = false;
+        this.tslow = false;
+        this.rdown = false;
+        this.atkcd = 0;
         this.bmode = true;
     }
 
@@ -38,22 +48,120 @@ export class Player {
 
     update(input, towers, projectiles, enemies) {
         
-        // If not in Buy-Mode checks attack cooldown
-        if (this.atkcooldown == 0) {
-            if (!this.bmode && input.mouse.down) {
-                projectiles.push(
-                    new PlayerProjectile(this.x, this.y, input.mouse.x, input.mouse.y, enemies));
-                this.atkcooldown = 180;
+        // If not in Buy-Mode
+        if (!this.bmode) {
+
+            // Toggles Push
+            if (!this.qdown) {
+                if (input.keys.includes('q')) {
+                    this.tpush = !this.tpush;
+                    this.qdown = true;
+                }
             }
-        }
-        else {
-            this.atkcooldown--;
+
+            else if (!input.keys.includes('q')) {
+                this.qdown = false;
+            }
+
+
+
+            // Toggles Pull
+            if (!this.edown) {
+                if (input.keys.includes('e')) {
+                    this.tpull = !this.tpull;
+                    this.edown = true;
+                }
+            }
+
+            else if (!input.keys.includes('e')) {
+                this.edown = false;
+            }
+
+            // Toggles Stun
+            if (!this.fdown) {
+                if (input.keys.includes('f')) {
+                    this.fstun = !this.fstun;
+                    this.fdown = true;
+                }
+            }
+
+            else if (!input.keys.includes('f')) {
+                this.fdown = false;
+            }
+
+            // Toggles Slow
+            if (!this.rdown) {
+                if (input.keys.includes('r')) {
+                    this.tslow = !this.tslow;
+                    this.rdown = true;
+                }
+            }
+
+            else if (!input.keys.includes('r')) {
+                this.rdown = false;
+            }
+
+            if (this.atkcd == 0) {
+                if (input.mouse.down) {
+
+                    const xdiff = input.mouse.x - this.x;
+                    const ydiff = input.mouse.y - this.y;
+                    const xrat = xdiff / Math.sqrt(xdiff**2 + ydiff**2);
+                    const yrat = ydiff / Math.sqrt(xdiff**2 + ydiff**2);
+                    projectiles.push(
+                        new PlayerProjectile(this.x, this.y, xrat, yrat, this.tpush, this.tpull, this.tstun, this.tslow));
+                    this.mana -= 1;
+                    if (this.tpush) {
+                        this.mana -= 1;
+                    }
+                    if (this.tpull) {
+                        this.mana -= .5;
+                    }
+                    if (this.tstun) {
+                        this.mana -= 4;
+                    }
+                    if (this.tslow) {
+                        this.mana -= 2;
+                    }
+                    this.atkcd = 30;
+                }
+            }
+
+            else {
+                this.atkcd--;
+            }
         }
     
 
         // Creates new x and y position based on user input
         let x = this.x;
         let y = this.y;
+        
+        if (this.dashcd == 0) {
+            if (input.keys.includes(' ')) {
+                if (input.keys.includes('d') || input.keys.includes('ArrowRight')) {
+                    x += 200;
+                }
+
+                if (input.keys.includes('a') || input.keys.includes('ArrowLeft')) {
+                    x -= 200;
+                }
+
+                if (input.keys.includes('w') || input.keys.includes('ArrowUp')) {
+                    y -= 200;
+                }
+
+                if (input.keys.includes('s') || input.keys.includes('ArrowDown')) {
+                    y += 200;
+                }
+                this.dashcd = 30;
+            }
+        }
+
+        else {
+            this.dashcd--;
+        }
+
         if (input.keys.includes('d') || input.keys.includes('ArrowRight')) {
             x += this.speed;
         }
@@ -89,6 +197,10 @@ export class Player {
 
         if (this.iframes > 0) {
             this.iframes--;
+        }
+
+        if (this.mana < 100) {
+            this.mana += .017;
         }
     }
 }

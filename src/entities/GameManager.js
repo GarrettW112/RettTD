@@ -62,8 +62,10 @@ export class GameManager {
     }
 
     buyTower(type, gridX, gridY) {
-        
-        if (gridX < 0 || gridX > 7 || gridY < 0 || gridY > 7) return false;
+
+        if (gridX < 0 || gridX > 7 || gridY < 0 || gridY > 7) {
+            return false;
+        }
         
         const cost = (type === 'wizard') ? 20 : 10;
 

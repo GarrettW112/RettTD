@@ -27,7 +27,7 @@ export class Game {
         this.towers[4][4] = this.core;
         this.player = new Player(this.width, this.height);
         this.magic = [this.core];
-        this.menus = new Menus(this.width, this.height);
+        this.menus = new Menus(this.width, this.height, this.player);
         this.input = new InputHandler(canvas);
     }
 

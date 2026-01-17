@@ -9,9 +9,10 @@ const WIDTH = 50;
 const HEIGHT = 50;
 
 export class Menus {
-    constructor(width, height) {
+    constructor(width, height, player) {
         this.width = width;
         this.height = height;
+        this.player = player
         this.esc = false;
         this.etoggle = true;
         this.bmenu = false;
@@ -46,6 +47,53 @@ export class Menus {
             ctx.fillStyle = "black";
             ctx.textAlign = "right";
             ctx.fillText(this.tstring, this.width - 30, 30);
+
+            const boxWidth = 25;
+            const boxHeight = 25;
+            
+            const x = 5;
+            const y = this.width - boxWidth - 5
+
+            if (this.player.tpush) {
+                ctx.fillStyle = "rgba(62, 57, 45, 0.9)";
+            }
+            else {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            }
+            ctx.fillRect(5, y, boxWidth, boxHeight);
+
+            if (this.player.tpull) {
+                ctx.fillStyle = "rgba(62, 57, 45, 0.9)";
+            }
+            else {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            }
+            ctx.fillRect(35, y, boxWidth, boxHeight);
+
+            if (this.player.tstun) {
+                ctx.fillStyle = "rgba(62, 57, 45, 0.9)";
+            }
+            else {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            }
+            ctx.fillRect(65, y, boxWidth, boxHeight);
+
+            if (this.player.tslow) {
+                ctx.fillStyle = "rgba(62, 57, 45, 0.9)";
+            }
+            else {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+            }
+            ctx.fillRect(95, y, boxWidth, boxHeight);
+
+            ctx.fillStyle = "rgba(38, 34, 34, 0.8)";
+
+            ctx.fillRect(5, y - 30, 404, 14);
+
+            ctx.fillStyle = "rgba(6, 85, 254, 0.8)";
+
+            ctx.fillRect(7, y - 28, 4 * this.player.mana, 10);
+
         }
 
         else {
@@ -222,6 +270,10 @@ export class Menus {
                     if (input.mouse.down) {
                         this.buyx = this.gridx;
                         this.buyy = this.gridy;
+                        if (towers[this.buyx][this.buyy].range) {
+                            this.utower = true;
+                        }
+                        
                         this.bmenu = true;
                     }
                 }

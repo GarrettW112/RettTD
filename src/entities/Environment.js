@@ -12,7 +12,7 @@ export class Environment {
 
         // Introduces Wisps & Basic Mechanics
 
-        if (this.level == 10) {
+        if (this.level == 1) {
             if (this.envtime % 60 == 0 && this.envtime < 1202) {
                 let rand = Math.floor(Math.random() * 4)
                 if (rand == 0) {
@@ -121,7 +121,7 @@ export class Environment {
 
         // Introduces Golems
 
-        if (this.level == 1) {
+        if (this.level == 10) {
             enemies.push(new NecNovice(this.width, Math.floor(Math.random() * this.height)));
         }
         

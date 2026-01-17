@@ -71,6 +71,49 @@ export class NecProjectile extends Projectile {
 }
 
 export class PlayerProjectile extends Projectile {
+    constructor(x, y, xrat, yrat, push, pull, stun, slow) {
+        super(x, y);
+        this.xrat = xrat;
+        this.yrat = yrat;
+        this.push = push;
+        this.pull = pull;
+        this.stun = stun;
+        this.slow = slow;
+        this.speed = 5;
+        this.size = 10;
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(this.x-(this.size/2), this.y-(this.size/2), this.size, this.size);
+    }
+
+    update(enemies, player, magic) {
+        for (const enemy of enemies) {
+            let diff = Math.sqrt(((this.x - enemy.x)**2) + ((this.y - enemy.y)**2));
+            if (diff < 20) {
+                enemy.hp -= 25;
+                if (this.push) {
+                    enemy.x += this.xrat*50;
+                    enemy.y += this.yrat*50;
+                }
+                if (this.pull) {
+                    enemy.x -= this.xrat*50;
+                    enemy.y -= this.yrat*50;
+                }
+                this.flag = true;
+                break;
+            }
+        }
+        if (!this.flag) {
+            this.x += (this.xrat * this.speed);
+            this.y += (this.yrat * this.speed);
+        }
+    }
+}
+
+
+class DepPlayerProjectile extends Projectile {
     constructor(x, y, targetx, targety, enemies) {
         super(x, y);
         this.speed = 2;
@@ -150,5 +193,4 @@ export class Arrow extends Projectile {
             this.y += (this.yrat * this.speed);
         }
     }
-
 }
